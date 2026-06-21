@@ -1,4 +1,28 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Forging Ground — Method Alchemy Challenge</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    window.storage = {
+      async get(key) {
+        const value = localStorage.getItem(key);
+        return value ? { value } : null;
+      },
+      async set(key, value) {
+        localStorage.setItem(key, value);
+      }
+    };
+  </script>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
 
 /* ═══════════════════════════════════════════
    EMBEDDED IMAGES
@@ -725,7 +749,7 @@ const DAYS = [
 /* ═══════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════ */
-export default function ForgingGround() {
+function ForgingGround() {
   const [activeDay, setActiveDay] = useState(1);
   const [data, setData] = useState({});
   const [loaded, setLoaded] = useState(false);
@@ -1558,3 +1582,9 @@ export default function ForgingGround() {
     </>
   );
 }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(ForgingGround));
+  </script>
+</body>
+</html>
