@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro & Micro Transformations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1411; --bg2:#101a16; --bg3:#0a100d;
+  --ink:#F1E7D6; --ink-dim:#BDB09A; --ink-faint:#8C8270;
+  --copper:#C6955C; --copper-lt:#E2B884; --copper-dk:#9A6F3E;
+  --ember:#E8743B; --ember-glow:#FF8A4C;
+  --forest:#2C5F5A; --forest-lt:#4FA89B;
+  --mauve:#9B7C8B; --mauve-lt:#C0A2B0;
+  --gold:#D8B968;
+  --surface:rgba(22,34,28,0.72); --surface-2:rgba(241,231,214,0.045);
+  --line:rgba(198,149,92,0.20); --line-2:rgba(241,231,214,0.10);
+  --shadow:0 10px 36px rgba(0,0,0,0.45);
+  --radius:16px; --radius-sm:11px;
+  --serif:'Cormorant Garamond','Hoefler Text',Georgia,serif;
+  --sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);}
+body{
+  font-family:var(--sans); color:var(--ink);
+  -webkit-font-smoothing:antialiased; line-height:1.6;
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* Background scene */
+.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:radial-gradient(ellipse 120% 90% at 50% -10%,#16241d 0%,#0d1411 50%,#080d0b 100%);}
+.bg-scene::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 60% 50% at 18% 12%,rgba(232,116,59,0.16) 0%,transparent 55%),
+  radial-gradient(ellipse 50% 55% at 85% 22%,rgba(198,149,92,0.14) 0%,transparent 52%),
+  radial-gradient(ellipse 55% 50% at 72% 88%,rgba(44,95,90,0.30) 0%,transparent 55%),
+  radial-gradient(ellipse 45% 55% at 8% 82%,rgba(155,124,139,0.14) 0%,transparent 55%);}
+.bg-scene::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,
+  rgba(198,149,92,0.05) 0%,rgba(232,116,59,0.04) 30%,rgba(44,95,90,0.05) 60%,rgba(198,149,92,0.05) 100%);
+  background-size:400% 400%;animation:bgShimmer 16s ease-in-out infinite alternate;}
+@keyframes bgShimmer{0%{background-position:0% 50%;}100%{background-position:100% 50%;}}
+.orb{position:absolute;border-radius:50%;filter:blur(46px);animation:orbFloat ease-in-out infinite alternate;pointer-events:none;}
+@keyframes orbFloat{0%{transform:translate(0,0) scale(1);opacity:.6;}100%{transform:translate(var(--ox,20px),var(--oy,-24px)) scale(1.12);opacity:.85;}}
+.ember{position:absolute;border-radius:50%;background:var(--ember-glow);
+  box-shadow:0 0 6px 1px rgba(232,116,59,0.8);animation:emRise linear infinite;pointer-events:none;}
+@keyframes emRise{0%{transform:translateY(0) translateX(0);opacity:0;}10%{opacity:1;}90%{opacity:.8;}
+  100%{transform:translateY(-100vh) translateX(var(--drift,0));opacity:0;}}
+
+/* Layout */
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:54px 22px 70px;}
+.kicker{font-family:var(--mono);font-size:.74em;font-weight:500;text-transform:uppercase;
+  letter-spacing:4px;color:var(--copper);text-align:center;margin-bottom:14px;}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.4em,6vw,3.9em);
+  text-align:center;line-height:1.05;letter-spacing:.5px;
+  background:linear-gradient(100deg,var(--copper-lt) 0%,var(--ember-glow) 35%,var(--gold) 60%,var(--mauve-lt) 85%,var(--copper) 100%);
+  background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 26px rgba(232,116,59,0.30));animation:shimmerText 8s ease-in-out infinite alternate;}
+@keyframes shimmerText{0%{background-position:0% 50%;}100%{background-position:100% 50%;}}
+.lede{max-width:620px;margin:20px auto 0;text-align:center;color:var(--ink-dim);
+  font-weight:300;font-size:1.06em;line-height:1.65;}
+.lede b{color:var(--copper-lt);font-weight:600;}
+
+/* Macro banner — the north star */
+.macro{position:relative;margin:42px 0 10px;border-radius:var(--radius);overflow:hidden;
+  background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px 0 rgba(241,231,214,0.05);
+  padding:26px 30px;text-align:center;}
+.macro::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--gold),var(--copper),var(--ember));box-shadow:0 0 14px rgba(216,185,104,0.5);}
+.macro .star{font-size:1.6em;line-height:1;}
+.macro h2{font-family:var(--serif);font-weight:700;font-size:1.7em;margin:8px 0 6px;color:var(--ink);letter-spacing:.3px;}
+.macro p{color:var(--ink-dim);font-weight:300;font-size:.98em;max-width:560px;margin:0 auto;}
+.macro .macro-eg{margin-top:18px;padding-top:16px;border-top:1px solid var(--line-2);text-align:left;}
+.macro .macro-eg .eg-tag{font-family:var(--mono);font-size:.6em;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:11px;}
+.macro .macro-eg p{font-size:.93em;color:var(--ink-dim);font-weight:300;line-height:1.55;
+  max-width:100%;margin:0 0 8px;}
+.macro .macro-eg p:last-child{margin-bottom:0;}
+.macro .macro-eg b{color:var(--copper-lt);font-weight:600;}
+.macro .tag{display:inline-block;font-family:var(--mono);font-size:.62em;font-weight:600;
+  text-transform:uppercase;letter-spacing:2px;color:var(--gold);
+  background:rgba(216,185,104,0.13);border:1px solid rgba(216,185,104,0.32);
+  padding:4px 11px;border-radius:20px;margin-bottom:4px;}
+
+/* Connector */
+.ladder{text-align:center;color:var(--ink-faint);font-family:var(--mono);
+  font-size:.66em;text-transform:uppercase;letter-spacing:2.5px;margin:22px 0 6px;}
+.ladder .arrow{display:block;color:var(--copper);font-size:1.5em;line-height:1;margin-bottom:8px;opacity:.7;}
+
+/* Micro grid */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px;}
+.card{position:relative;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:var(--radius);padding:22px 22px 24px;border:1px solid var(--line);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(241,231,214,0.05);overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;}
+.card.ember::before{background:linear-gradient(180deg,var(--ember-glow),var(--ember),var(--copper));}
+.card.gold::before{background:linear-gradient(180deg,var(--gold),var(--copper),var(--copper-dk));}
+.card.forest::before{background:linear-gradient(180deg,var(--forest-lt),var(--forest));}
+.card.mauve::before{background:linear-gradient(180deg,var(--mauve-lt),var(--mauve));}
+.card .label{font-family:var(--mono);font-size:.62em;font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:9px;}
+.card.ember .label{color:var(--ember-glow);}
+.card.gold .label{color:var(--gold);}
+.card.forest .label{color:var(--forest-lt);}
+.card.mauve .label{color:var(--mauve-lt);}
+.card h3{font-family:var(--serif);font-weight:700;font-size:1.5em;color:var(--ink);margin-bottom:8px;letter-spacing:.3px;}
+.card .micro{font-weight:400;font-size:.95em;color:var(--ink);margin-bottom:12px;line-height:1.55;}
+.card .eg{font-weight:300;font-size:.86em;color:var(--ink-dim);line-height:1.55;
+  padding-top:11px;border-top:1px solid var(--line-2);}
+.card .eg b{color:var(--copper-lt);font-weight:600;font-style:italic;}
+
+/* Closing */
+.close{margin-top:30px;border-radius:var(--radius);padding:24px 28px;
+  background:rgba(44,95,90,0.13);border:1px solid rgba(79,168,155,0.26);}
+.close h4{font-family:var(--serif);font-weight:700;font-size:1.45em;color:var(--ink);margin-bottom:10px;letter-spacing:.3px;}
+.close p{color:var(--ink-dim);font-weight:300;font-size:.98em;line-height:1.65;}
+.close p+p{margin-top:11px;}
+.close b{color:var(--forest-lt);font-weight:600;}
+.sig{text-align:center;margin-top:26px;font-family:var(--mono);font-size:.64em;
+  text-transform:uppercase;letter-spacing:3px;color:var(--ink-faint);}
+
+@media (max-width:600px){
+  .grid{grid-template-columns:1fr;}
+  .wrap{padding:40px 18px 56px;}
+  .macro{padding:22px 20px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s !important;animation-iteration-count:1 !important;}
+  .ember,.orb{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="bg-scene" id="bgScene"></div>
+<main class="wrap">
+  <div class="kicker">Method Alchemy 2.0</div>
+  <h1>Macro &amp; Micro Transformations</h1>
+  <p class="lede">Your method creates one <b>big transformation</b> over time. It gets built from dozens of <b>small ones</b>, happening in every room of your ecosystem. Here is how they fit together, traced through one example coach.</p>
+
+  <div class="macro">
+    <span class="tag">The North Star</span>
+    <div class="star">&#9733;</div>
+    <h2>Your Macro Transformation</h2>
+    <p>The full before-and-after your whole ecosystem exists to create. Who someone was when they found you, and who they become after working with you. This is the destination everything points toward.</p>
+    <div class="macro-eg">
+      <div class="eg-tag">Example Ecosystem</div>
+      <p><b>The coach:</b> an intuitive empowerment coach.</p>
+      <p><b>Her people:</b> awakened, sensitive women who get intuitive hits constantly, yet second-guess every one and outsource every decision to oracle decks, mentors, and the group chat.</p>
+      <p><b>The transformation she provides:</b> they become the final authority of their own lives, trusting their inner voice over any deck, guru, or outside vote.</p>
+    </div>
+  </div>
+
+  <div class="ladder"><span class="arrow">&#8593;</span>The rooms where the small shifts happen</div>
+
+  <div class="grid">
+    <div class="card ember">
+      <div class="label">Live &amp; 1:1</div>
+      <h3>Session</h3>
+      <p class="micro">One realization, one breakthrough, one felt shift in real time. The most intimate micro transformation you offer.</p>
+      <p class="eg"><b>"The Clear Yes":</b> bring the one decision you've spun on for weeks and leave able to tell intuition from fear, with a yes you actually trust.</p>
+    </div>
+
+    <div class="card gold">
+      <div class="label">Structured Offer</div>
+      <h3>Program</h3>
+      <p class="micro">A planned sequence of shifts, stacked with intention toward one clear outcome over a set span of time.</p>
+      <p class="eg"><b>"The Last Permission Slip" (8 weeks):</b> the last time you'll need anyone to confirm what you already know. Your inner voice becomes the final word.</p>
+    </div>
+
+    <div class="card forest">
+      <div class="label">Skool Group</div>
+      <h3>Community</h3>
+      <p class="micro">Belonging, being seen, and the steady ahas that happen between the bigger moments. Transformation through connection.</p>
+      <p class="eg"><b>"The Trust Lab":</b> practice acting on your intuition, report back what happened, and stack proof that your knowing is right, beside women doing the same.</p>
+    </div>
+
+    <div class="card mauve">
+      <div class="label">Lessons &amp; Content</div>
+      <h3>Module / Classroom</h3>
+      <p class="micro">Understanding that clicks into place and gets integrated at their own rhythm. Transformation through knowing.</p>
+      <p class="eg"><b>"Signal vs. Static":</b> a body-based test to tell a true intuitive hit from an anxious spiral, so you stop mistaking fear for guidance.</p>
+    </div>
+  </div>
+
+  <div class="close">
+    <h4>So which one is "the challenge" about?</h4>
+    <p>All of them. They are rooms in the same house, and every room serves the same macro transformation. A <b>session</b>, a <b>program</b>, your <b>community</b>, a <b>classroom module</b>, each one is a vehicle for the small shifts that ladder up to the big one.</p>
+    <p>So yes, focusing on your Skool community for this challenge is a full yes. Every time someone has an aha in your group, feels seen in a comment, or takes action because of something you posted, that is a real micro transformation happening through your method. Wherever you are creating genuine shifts for real people, that is your practice. Log it, reflect on it, and watch the small moments add up.</p>
+  </div>
+
+  <div class="sig">Soul-Forged Founders &#183; Method Alchemy 2.0</div>
+</main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var scene = document.getElementById('bgScene');
+  var orbs = [
+    {w:300,h:300,top:'6%',left:'8%',color:'rgba(232,116,59,0.28)',dur:14,ox:'24px',oy:'-30px'},
+    {w:240,h:240,top:'60%',left:'82%',color:'rgba(198,149,92,0.22)',dur:18,ox:'-20px',oy:'-26px'},
+    {w:260,h:260,top:'74%',left:'18%',color:'rgba(44,95,90,0.32)',dur:16,ox:'18px',oy:'-22px'},
+    {w:180,h:180,top:'18%',left:'62%',color:'rgba(155,124,139,0.2)',dur:20,ox:'-16px',oy:'-28px'}
+  ];
+  orbs.forEach(function(o){
+    var d=document.createElement('div');d.className='orb';
+    d.style.width=o.w+'px';d.style.height=o.h+'px';d.style.top=o.top;d.style.left=o.left;
+    d.style.background=o.color;d.style.animationDuration=o.dur+'s';
+    d.style.setProperty('--ox',o.ox);d.style.setProperty('--oy',o.oy);
+    scene.appendChild(d);
+  });
+  if(reduce) return;
+  setInterval(function(){
+    var e=document.createElement('div');e.className='ember';
+    var s=(1.5+Math.random()*2).toFixed(1);
+    e.style.width=s+'px';e.style.height=s+'px';
+    e.style.left=(Math.random()*100)+'%';e.style.bottom='-10px';
+    e.style.animationDuration=(7+Math.random()*6)+'s';
+    e.style.setProperty('--drift',((Math.random()*120)-60)+'px');
+    scene.appendChild(e);
+    setTimeout(function(){e.remove();},13000);
+  },600);
+})();
+</script>
+</body>
+</html>
