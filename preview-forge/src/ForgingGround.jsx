@@ -398,14 +398,14 @@ const DAYS = [
       {
         type: "comparison",
         mode: "parallel",
-        title: "Method Name vs. Method Statement",
+        title: "Method Name vs. Transformation Statement",
         lead: "You need both — the name gets their attention, the statement earns their trust.",
         wrong: {
           label: "Method Name",
           text: "What you call it. The brand. The thing people remember and refer back to."
         },
         right: {
-          label: "Method Statement",
+          label: "Transformation Statement",
           text: "How you describe what it does and who it's for. The explanation that makes someone say \"that's exactly what I need.\""
         }
       },
@@ -438,15 +438,21 @@ const DAYS = [
     ],
     exercises: [
       {
-        id: "method_name", type: "text", label: "YOUR METHOD NAME",
-        desc: "What is your method called?",
+        id: "method_name", type: "text", label: "METHOD NAME BRAINSTORM",
+        desc: "What is your method called? Start here — name it, then build your messaging from it.",
         placeholder: "The [Name] Method / [Name] / etc."
       },
       {
-        id: "method_statement", type: "textarea", label: "YOUR METHOD STATEMENT",
-        desc: "How you describe what your method does and who it's for. This comes from your work in the Method to Message Generator.",
-        placeholder: "Write your method statement here...",
-        rows: 5, copyable: true, copyLabel: "Copy Method Statement"
+        id: "spark_statement", type: "textarea", label: "SPARK STATEMENT",
+        desc: "The short, punchy line. This is the quick win — it gets attention.",
+        placeholder: "Write your spark statement here...",
+        rows: 3, copyable: true, copyLabel: "Copy Spark Statement"
+      },
+      {
+        id: "transformation_statement", type: "textarea", label: "TRANSFORMATION STATEMENT",
+        desc: "How you describe what your method does and who it's for. The explanation that earns trust. This comes from your work in the Method to Message Generator.",
+        placeholder: "Write your transformation statement here...",
+        rows: 5, copyable: true, copyLabel: "Copy Transformation Statement"
       },
       {
         id: "mirror", type: "mirror", label: "THE DAY 1 MIRROR ✦",
@@ -467,13 +473,12 @@ const DAYS = [
       },
       {
         id: "feedback_post", type: "compiled", label: "FEEDBACK POST",
-        desc: "Your pieces compiled for community feedback. Review and copy.",
+        desc: "Today's work compiled for community feedback. Review and copy.",
         sources: [
-          { dayNum: 2, fieldId: "what_you_do_draft", label: "\"What Do You Do\" Draft" },
-          { dayNum: 2, fieldId: "transformation_before", label: "Transformation — Before" },
-          { dayNum: 2, fieldId: "transformation_shift", label: "Transformation — The Shift" },
-          { dayNum: 2, fieldId: "transformation_after", label: "Transformation — After" },
-          { dayNum: 5, fieldId: "method_name", label: "Method Name" }
+          { dayNum: 5, fieldId: "method_name", label: "Method Name" },
+          { dayNum: 5, fieldId: "spark_statement", label: "Spark Statement" },
+          { dayNum: 5, fieldId: "transformation_statement", label: "Transformation Statement" },
+          { dayNum: 5, fieldId: "bio_rewrite", label: "Bio Rewrite" }
         ],
         copyLabel: "Copy Feedback Post"
       }
@@ -707,7 +712,8 @@ const DAYS = [
     exercises: [],
     summaryFields: [
       { dayNum: 5, fieldId: "method_name", label: "Method Name", type: "text" },
-      { dayNum: 5, fieldId: "method_statement", label: "Method Statement", type: "text" },
+      { dayNum: 5, fieldId: "spark_statement", label: "Spark Statement", type: "text" },
+      { dayNum: 5, fieldId: "transformation_statement", label: "Transformation Statement", type: "text" },
       { dayNum: 2, fieldId: "what_you_do_draft", label: "\"What Do You Do\" Draft", type: "text" },
       { dayNum: 2, fieldId: "transformation_before", label: "Transformation — Before", type: "text" },
       { dayNum: 2, fieldId: "transformation_shift", label: "Transformation — The Shift", type: "text" },
